@@ -68,12 +68,18 @@ write(*,'(a)')
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ! 2. Read the SFR2PAR input file
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  write(*,'(a)') 'Input file:', trim(infile)
+  write(*,'(2a)') '        Input file: ', trim(infile)
   open(unit=iuSFR2PAR, file=trim(infile), status='old', action='read')
   read(iuSFR2PAR,*) sfr_file(1)       ! SFR filename
   read(iuSFR2PAR,*) sfr_file(2)       ! SFR output filename
-  read(iuSFR2PAR,*) lpf_file       ! LPF/UPW filename or "NONE"
+  read(iuSFR2PAR,*) lpf_file          ! LPF/UPW filename or "NONE"
   read(iuSFR2PAR,*) nlay, nrow, ncol
+  
+  ! write to screen
+  write(*,'(2a)') 'Read from SFR file: ', trim(sfr_file(1))
+  write(*,'(2a)') ' Write to SFR file: ', trim(sfr_file(2))
+  write(*,'(2a)') '          LPF file: ', trim(infile)
+  write(*,'(a)')
    
   open(unit=iuSFR, file=trim(sfr_file(1)), status='old', action='read')
   
@@ -253,7 +259,7 @@ subroutine read_kv_from_lpf(lpf_file, nlay, nrow, ncol, kvArray)
 
       ! When arrayIndex reaches 3, we are at the Kv array (VKA)
       if (arrayIndex == 2) then
-        print *, 'Found Kv array, reading data...'
+        print *, 'Found Kv array, reading data for Layer', k
 
         ! Read the Kv array for each layer
         read(iuLPF, '(10e12.4)', iostat=ierr) kvArray(k, 1:, 1:)
