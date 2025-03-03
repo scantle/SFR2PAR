@@ -78,7 +78,7 @@ write(*,'(a)')
   ! write to screen
   write(*,'(2a)') 'Read from SFR file: ', trim(sfr_file(1))
   write(*,'(2a)') ' Write to SFR file: ', trim(sfr_file(2))
-  write(*,'(2a)') '          LPF file: ', trim(infile)
+  write(*,'(2a)') '          LPF file: ', trim(lpf_file)
   write(*,'(a)')
    
   open(unit=iuSFR, file=trim(sfr_file(1)), status='old', action='read')
@@ -257,22 +257,15 @@ subroutine read_kv_from_lpf(lpf_file, nlay, nrow, ncol, kvArray)
       end if
       
 
-      ! When arrayIndex reaches 3, we are at the Kv array (VKA)
+      ! When arrayIndex reaches 2, we are at the Kv array (VKA)
+      ! TODO handle HANI (CHANI <= 0)
       if (arrayIndex == 2) then
         print *, 'Found Kv array, reading data for Layer', k
 
         ! Read the Kv array for each layer
-        read(iuLPF, '(10e12.4)', iostat=ierr) kvArray(k, 1:, 1:)
-        
-        !do k = 1, nlay
-        !  do i = 1, nrow
-        !    read(iuLPF, '(10e12.4)', iostat=ios) (kvArray(k, i, j), j = 1, ncol)
-        !    if (ios /= 0) then
-        !      print *, 'Error reading Kv values at Layer:', k, ' Row:', i
-        !      exit
-        !    end if
-        !  end do
-        !end do
+        do i = 1, nrow
+          read(iuLPF, '(10E12.4)', iostat=ios) ( kvArray(k, i, j), j = 1, ncol )
+        end do
 
       end if
     end do
